@@ -3,8 +3,8 @@ import pygame, time, random
 pygame.init()
 black = (0,0,0)
 
-columns = 4
-rows = 4
+columns = 10
+rows = 10
 #define window size
 display_width = columns * 100
 display_height = rows * 100
@@ -21,8 +21,28 @@ square90 = pygame.image.load('square90.jpg')
 square90 = pygame.transform.scale(square90, (100, 100))
 rotations = [square, square90]
 
-#pattern = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
-pattern = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
+pattern3 = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
+pattern2 = [[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]]
+pattern1 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
+#pattern1 = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
+
+patterns = [pattern1, pattern2, pattern3]
+
+#create pos checker for efficiency (instead of using random and checking the same tile more than once...)
+
+global scannerMatrix
+def generateScannerPos():
+    global scannerMatrix
+    scannerMatrix = []
+    for x in range(columns):
+        for y in range(rows):
+            scannerMatrix.append([x,y])
+
+    random.shuffle(scannerMatrix)
+
+generateScannerPos()
+
+
 column = []
 j = 0
 while j < columns:
@@ -35,49 +55,45 @@ while j < columns:
         column.append(row)
         j += 1
 
-for rowindex, row in enumerate(column):
-        for imageindex, image in enumerate(row):
-                Display.blit(rotations[image], (rowindex*100, imageindex*100))
+def displayImages():
+    for rowindex, row in enumerate(column):
+            for imageindex, image in enumerate(row):
+                    Display.blit(rotations[image], (rowindex*100, imageindex*100))
 
 gameExit = False
 
-positionsx = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3]
-positionsy = [0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3]
-pos1 = 0
-pos2 = 0
-
+currentPos = 0
+currentPattern = 0
 while not gameExit:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                         gameExit = True
 
-        try:
-                selectedRow = positionsx[pos1]
-                selectedColumn = positionsy[pos2]
-        except:
-                input()
-
+        selectedRow = scannerMatrix[currentPos][1]
+        selectedColumn = scannerMatrix[currentPos][0]
         selectedSquare = column[selectedColumn][selectedRow]
 
-        print(selectedSquare, pattern[selectedColumn][selectedRow])
+        print(selectedSquare, patterns[currentPattern][selectedColumn][selectedRow])
 
-        if selectedSquare == pattern[selectedColumn][selectedRow]:
+        if selectedSquare == patterns[currentPattern][selectedColumn][selectedRow]:
                 print("same")
 
         else:
-                #print("invalid square")
-                #print(selectedSquare)
                 if selectedSquare == 0:
-                        Display.blit(rotations[1], (selectedRow*100, selectedColumn*100))
+                        column[selectedColumn][selectedRow] = 1
 
                 elif selectedSquare == 1:
-                        Display.blit(rotations[0], (selectedRow*100, selectedColumn*100))
+                        column[selectedColumn][selectedRow] = 0
 
-        pos1 += 1
-        pos2 += 1
-
-
+        displayImages()
         pygame.display.update()
+
+        if column == patterns[currentPattern]:
+            print("done")
+            input()
+
+        currentPos += 1
+
         clock.tick(20)
 
 pygame.quit()
