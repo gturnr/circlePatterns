@@ -3,6 +3,7 @@ import pygame, time, random
 pygame.init()
 black = (0,0,0)
 
+#minimum is 2,2!!!
 columns = 10
 rows = 10
 #define window size
@@ -21,15 +22,45 @@ square90 = pygame.image.load('square90.jpg')
 square90 = pygame.transform.scale(square90, (100, 100))
 rotations = [square, square90]
 
-pattern3 = [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1]]
+#write in patterns here
+
+pattern1 = [[1,1,1,1],[1,1,1,1]]
 pattern2 = [[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]]
-pattern1 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
+pattern3 = [[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0]]
+pattern4 = [[0,0,1,1,0,0,1,1,0,0],[1,1,0,0,1,1,0,0,1,1],[0,0,1,1,0,0,1,1,0,0],[1,1,0,0,1,1,0,0,1,1],[0,0,1,1,0,0,1,1,0,0],[1,1,0,0,1,1,0,0,1,1],[0,0,1,1,0,0,1,1,0,0],[1,1,0,0,1,1,0,0,1,1],[0,0,1,1,0,0,1,1,0,0],[1,1,0,0,1,1,0,0,1,1]]
 #pattern1 = [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
 
-patterns = [pattern1, pattern2, pattern3]
+patterns = [pattern1, pattern2, pattern3, pattern4]
+
+#replicating pattern algorithm
+for pattern in patterns:
+
+    if len(pattern) == columns & len(pattern[0] == rows):
+        pass
+    else:
+        
+
+        if len(pattern) == columns:
+            print("equal columms")
+        elif len(pattern) < columns:
+            index = 0
+            while len(pattern) < columns:
+                
+                pattern.append(pattern[index])
+
+                index +=1
+
+                if index >= len(pattern) - 1:
+                    index = 0
+
+        elif len(pattern > columns:
+            pattern.pop(len(pattern) - columns)
+
+
+
+print(len(patterns))
 
 #create pos checker for efficiency (instead of using random and checking the same tile more than once...)
-
 global scannerMatrix
 def generateScannerPos():
     global scannerMatrix
@@ -88,11 +119,21 @@ while not gameExit:
         displayImages()
         pygame.display.update()
 
-        if column == patterns[currentPattern]:
-            print("done")
-            input()
-
         currentPos += 1
+
+        if column == patterns[currentPattern]:
+
+            time.sleep(1)
+
+            if currentPattern >= len(patterns) -1:
+                currentPattern = 0
+            else:
+                currentPattern += 1
+                
+            generateScannerPos()
+            currentPos = 0
+
+
 
         clock.tick(20)
 
