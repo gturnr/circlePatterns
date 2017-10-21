@@ -3,11 +3,15 @@ import pygame, time, random
 pygame.init()
 black = (0,0,0)
 
-columns = 5
-rows = 5
+columns = 100
+rows = 100
+
+fps = 0
+tileSize = 10
+
 #define window size
-display_width = columns * 100
-display_height = rows * 100
+display_width = columns * tileSize
+display_height = rows * tileSize
 
 #define pygame window characteristics
 Display = pygame.display.set_mode((display_width,display_height))
@@ -16,9 +20,9 @@ pygame.display.set_caption('Squares')
 clock = pygame.time.Clock()
 
 square = pygame.image.load('square.jpg')
-square = pygame.transform.scale(square, (100, 100))
+square = pygame.transform.scale(square, (tileSize, tileSize))
 square90 = pygame.image.load('square90.jpg')
-square90 = pygame.transform.scale(square90, (100, 100))
+square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
 
 
@@ -43,9 +47,9 @@ while not gameExit:
 
         for rowindex, row in enumerate(column):
                 for imageindex, image in enumerate(row):
-                        Display.blit(rotations[image], (rowindex*100, imageindex*100))
+                        Display.blit(rotations[image], (rowindex*tileSize, imageindex*tileSize))
 
         pygame.display.update()
-        clock.tick(10)
+        clock.tick(fps)
 
 pygame.quit()

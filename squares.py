@@ -1,41 +1,55 @@
 import pygame, time, random
 pygame.init()
 
-#CHANGE VALUES - must be Int (Can be different!)
-columns = 6
-rows = 6
+#CHANGE THESE VALUES
 
-display_width = columns * 100
-display_height = rows * 100
+#number of columns and rows on the plane - must be Int (Can be different!)
+columns = 5
+rows = 4
 
-#define pygame window characteristics
+#x,y of each tile. If increasing tileSize, considerdecreasing the rows and columns variables above...
+tileSize = 100
+
+#Enter the desired fps of the display - note the higher the fps the faster each pattern will be completed
+#This is the desired FPS, if the value is too high, the program will only run at the fastest it can
+#If you wish to leave the fps uncapped, set the value to 0
+fps = 0
+
+#write in patterns here (can include any number of patterns, just add the variable to the list 'patterns' below)
+#patterns can be any number of columns and rows, and can also be non-uniform (eg. 4 rows in column 1, then 7 rows in column 2)
+pattern1 = [[1,0],[0,1]]
+pattern2 = [[0,1],[1,0]]
+pattern3 = [[1,1],[0,0]]
+pattern4 = [[0,1,0],[0,0]]
+pattern5 = [[1,0,1,0,1],[1,0,1,0,1]]
+pattern6 = [[1,1,0,0],[0,0,1,1]]
+pattern7 = [[1,0,0,0,1],[1,1,1,1,1,0],[0,1,0,1]]
+
+patterns = [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]
+
+########################################
+### DO NOT CHANGE ANY VARIABLES BELOW ##
+########################################
+
+display_width = columns * tileSize
+display_height = rows * tileSize
+
+#define pygame window characteristics, and clock (used for FPS)
 Display = pygame.display.set_mode((display_width,display_height))
-
 pygame.display.set_caption('Squares')
 clock = pygame.time.Clock()
 
-#load images and apply the correct transformations
+#load images and apply the correct transformations (scaling)
 square = pygame.image.load('square.jpg')
-square = pygame.transform.scale(square, (100, 100))
+square = pygame.transform.scale(square, (tileSize, tileSize))
 square90 = pygame.image.load('square90.jpg')
-square90 = pygame.transform.scale(square90, (100, 100))
+square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
 
-#write in patterns here (can include more than 4 patterns, just add it to the list 'patterns' below)
-#patterns can be any number of columns and rows, and can also be non-uniform (eg. 4 rows in column 1, then 7 rows in column 2)
-
-pattern1 = [[1,0],[0,1]]
-pattern2 = [[0,1,0],[0,0]]
-pattern3 = [[1,0,1,0,1],[1,0,1,0,1]]
-pattern4 = [[1,1,0,0],[0,0,1,1]]
-pattern5 = [[1,0,0,0,1],[1,1,1,1,1,0],[0,1,0,1]]
-
-patterns = [pattern1, pattern2, pattern3, pattern4, pattern5]
-
 '''
-The below algorithm converts any inputted patern into a grid compatible with the output plane size
+The below algorithm converts any inputted patern into a list compatible with the output plane size
 
-Firstly it checks if the columns or rows are equal to the plane size, if not, the sequence is duplicated 
+Firstly it checks if the columns or rows are equal to the plane size, if not, the sequence is either duplicated or reduced
 so that there are the correct number of columns in each list position. Then if needed the pattern is ammended to have the same 
 number of rows (replicating itself based off of row 1 to the next entry, then row 2 and so on)
 '''
@@ -93,12 +107,13 @@ for pattern in patterns:
                     pattern.pop()
                     i +=1
 
+#Outputs the generated patterns to the console
 print('Patterns:')
 for item in patterns:
     print(item)
 print(' ')
 
-#create pos checker for efficiency (instead of using random and checking the same tile more than once...)
+#create pos checker list for efficiency (instead of using random and checking the same tile more than once...)
 global scannerMatrix
 def generateScannerPos():
     global scannerMatrix
@@ -106,10 +121,11 @@ def generateScannerPos():
     for x in range(columns):
         for y in range(rows):
             scannerMatrix.append([x,y])
-
     random.shuffle(scannerMatrix)
 
 generateScannerPos()
+
+#Randomly generates the plane on launch, all tiles are randomly orientated and then compared to begin generating the first pattern
 column = []
 j = 0
 while j < columns:
@@ -125,7 +141,7 @@ while j < columns:
 def displayImages():
     for rowindex, row in enumerate(column):
             for imageindex, image in enumerate(row):
-                    Display.blit(rotations[image], (rowindex*100, imageindex*100))
+                    Display.blit(rotations[image], (rowindex*tileSize, imageindex*tileSize))
 
 gameExit = False
 currentPos = 0
@@ -138,10 +154,8 @@ while not gameExit:
         selectedRow = scannerMatrix[currentPos][1]
         selectedColumn = scannerMatrix[currentPos][0]
         selectedSquare = column[selectedColumn][selectedRow]
-        #print(selectedSquare, patterns[currentPattern][selectedColumn][selectedRow])
         if selectedSquare == patterns[currentPattern][selectedColumn][selectedRow]:
                 pass
-                #print("same")
 
         else:
                 if selectedSquare == 0:
@@ -156,7 +170,7 @@ while not gameExit:
 
         if column == patterns[currentPattern]:
             print('Completed pattern')
-            time.sleep(0.2)
+            time.sleep(1)
             print('Moving to next pattern...')
             if currentPattern >= len(patterns)-1:
                 currentPattern = 0
@@ -166,6 +180,6 @@ while not gameExit:
             generateScannerPos()
             currentPos = 0
 
-        clock.tick(200)
+        clock.tick(fps)
 
 pygame.quit()
