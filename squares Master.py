@@ -3,12 +3,12 @@ pygame.init()
 
 #CHANGE THESE VALUES
 
-#number of columns and rows on the plane - must be Int (Can be different!)
-columns = 5
-rows = 4
+#number of columns and rows on the plane - must be Int (Can be diff6erent!)
+columns = 20
+rows = 20
 
 #x,y of each tile. If increasing tileSize, considerdecreasing the rows and columns variables above...
-tileSize = 100
+tileSize = 50
 
 #Enter the desired fps of the display - note the higher the fps the faster each pattern will be completed
 #This is the desired FPS, if the value is too high, the program will only run at the fastest it can
@@ -18,7 +18,7 @@ fps = 0
 #write in patterns here (can include any number of patterns, just add the variable to the list 'patterns' below)
 #patterns can be any number of columns and rows, and can also be non-uniform (eg. 4 rows in column 1, then 7 rows in column 2)
 pattern1 = [[1,0],[0,1]]
-pattern2 = [[0,1],[1,0]]
+pattern2 = [[0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]]
 pattern3 = [[1,1],[0,0]]
 pattern4 = [[0,1,0],[0,0]]
 pattern5 = [[1,0,1,0,1],[1,0,1,0,1]]
@@ -26,6 +26,7 @@ pattern6 = [[1,1,0,0],[0,0,1,1]]
 pattern7 = [[1,0,0,0,1],[1,1,1,1,1,0],[0,1,0,1]]
 
 patterns = [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]
+#patterns = [pattern2]
 
 ########################################
 ### DO NOT CHANGE ANY VARIABLES BELOW ##
@@ -81,7 +82,10 @@ for pattern in patterns:
                     if len(item) == rows:
                         val = False
                     else:
-                        item.pop()
+                        if i % 2 == 0:
+                            item.pop()
+                        else:
+                            item.pop(0)
                         i +=1
 
         #row checks
@@ -104,7 +108,11 @@ for pattern in patterns:
                 if len(pattern) == columns:
                         val = False
                 else:
-                    pattern.pop()
+                    if i % 2 == 0:
+                            pattern.pop()
+                    else:
+                            pattern.pop(0)
+                    
                     i +=1
 
 #Outputs the generated patterns to the console
@@ -154,6 +162,7 @@ while not gameExit:
         selectedRow = scannerMatrix[currentPos][1]
         selectedColumn = scannerMatrix[currentPos][0]
         selectedSquare = column[selectedColumn][selectedRow]
+
         if selectedSquare == patterns[currentPattern][selectedColumn][selectedRow]:
                 pass
 
@@ -170,7 +179,7 @@ while not gameExit:
 
         if column == patterns[currentPattern]:
             print('Completed pattern')
-            time.sleep(1)
+            time.sleep(0.3)
             print('Moving to next pattern...')
             if currentPattern >= len(patterns)-1:
                 currentPattern = 0
