@@ -3,6 +3,9 @@ pygame.init()
 
 #CHANGE THESE VALUES
 
+#If True a user prompt will be run from the console allowing the below variables (excluding patterns) to be changed
+menuBool = True
+
 #number of columns and rows on the plane - must be Int (Can be diff6erent!)
 columns = 20
 rows = 20
@@ -26,11 +29,30 @@ pattern6 = [[1,1,0,0],[0,0,1,1]]
 pattern7 = [[1,0,0,0,1],[1,1,1,1,1,0],[0,1,0,1]]
 
 patterns = [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]
-#patterns = [pattern2]
+
+#Output the generated patterns if True
+outputPatterns = False
 
 ########################################
 ### DO NOT CHANGE ANY VARIABLES BELOW ##
 ########################################
+
+
+print('------------------------------------')
+print('Pattern generator - Guy Turner (2017)')
+print('------------------------------------')
+print('         guyturnertech.com')
+print('------------------------------------')
+
+if menuBool == True:
+    
+    print('\n')
+    columns = int(input('Enter the number of columns you want: '))
+    rows = int(input('Enter the number of rows you want: '))
+    tileSize = int(input('Enter the size of tile you want: '))
+    fps = int(input('Enter the desired fps: '))
+
+
 
 display_width = columns * tileSize
 display_height = rows * tileSize
@@ -116,10 +138,11 @@ for pattern in patterns:
                     i +=1
 
 #Outputs the generated patterns to the console
-print('Patterns:')
-for item in patterns:
-    print(item)
-print(' ')
+if outputPatterns == True:
+    print('Patterns:')
+    for item in patterns:
+        print(item)
+    print(' ')
 
 #create pos checker list for efficiency (instead of using random and checking the same tile more than once...)
 global scannerMatrix
@@ -154,6 +177,7 @@ def displayImages():
 gameExit = False
 currentPos = 0
 currentPattern = 0
+
 while not gameExit:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
