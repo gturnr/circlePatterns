@@ -30,9 +30,9 @@ global lastPressed
 lastPressed = time.time()
 
 #load images and apply the correct transformations (scaling)
-square = pygame.image.load('square.jpg')
+square = pygame.image.load('resources/square.jpg')
 square = pygame.transform.scale(square, (tileSize, tileSize))
-square90 = pygame.image.load('square90.jpg')
+square90 = pygame.image.load('resources/square90.jpg')
 square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
 
@@ -70,10 +70,6 @@ def button(x,y,ro, r, c):
     if x+tileSize > mouse[0] > x and y+tileSize > mouse[1] > y:
 
         if click[0] == 1:
-            print('click')
-            #currenttime = time.time()
-            #timeSpace = currenttime - lastPressed
-            #print(timeSpace)
 
             #if timeSpace > 0.1: 
             if ro == 0:

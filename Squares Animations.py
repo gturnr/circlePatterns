@@ -250,10 +250,5 @@ while not gameExit:
         displayImages()
         rotateTiles(rotationTracker)
         pygame.display.update()
-            
-
-        
-
         clock.tick(fps)
-
 pygame.quit()
