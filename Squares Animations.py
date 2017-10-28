@@ -13,6 +13,9 @@ rows = 20
 #x,y of each tile. If increasing tileSize, considerdecreasing the rows and columns variables above...
 tileSize = 50
 
+#Zoom sf - used when rotating images (between 1.0-1.9)
+zoom = 1.0
+
 #Enter the desired fps of the display - note the higher the fps the faster each pattern will be completed
 #This is the desired FPS, if the value is too high, the program will only run at the fastest it can
 #If you wish to leave the fps uncapped, set the value to 0
@@ -63,11 +66,17 @@ pygame.display.set_caption('Squares')
 clock = pygame.time.Clock()
 
 #load images and apply the correct transformations (scaling)
-square = pygame.image.load('resources/square.jpg')
+square = pygame.image.load('resources/squareB.jpg')
 square = pygame.transform.scale(square, (tileSize, tileSize))
-square90 = pygame.image.load('resources/square90.jpg')
+square90 = pygame.image.load('resources/square90B.jpg')
 square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
+
+squareL = pygame.image.load('resources/squareB.jpg')
+squareL = pygame.transform.scale(square, (int(tileSize*zoom), int(tileSize*zoom)))
+square90L = pygame.image.load('resources/square90B.jpg')
+square90L = pygame.transform.scale(square90, (int(tileSize*zoom), int(tileSize*zoom)))
+rotationsLarge = [squareL, square90L]
 
 '''
 The below algorithm converts any inputted patern into a list compatible with the output plane size
@@ -178,42 +187,72 @@ gameExit = False
 currentPos = 0
 currentPattern = 0
 
+rotationTracker = []
+
+def rotateTiles(tiles):
+    global column
+    for index, tile in enumerate(tiles):
+        degrees = tile[3]
+        if degrees < 90:
+            img = rotationsLarge[tile[2]].convert_alpha()
+
+            x = tile[0]*tileSize + (tileSize)/2
+            y = tile[1]*tileSize + (tileSize)/2
+
+            imgRotated = pygame.transform.rotate(img, degrees+5)
+
+            rect = imgRotated.get_rect()
+
+            tile[3] += 5
+            Display.blit(imgRotated, (x - rect.center[0], y - rect.center[1]))
+
+        else:
+            tiles.pop(index)
+
+
 while not gameExit:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                         gameExit = True
 
-        selectedRow = scannerMatrix[currentPos][1]
-        selectedColumn = scannerMatrix[currentPos][0]
-        selectedSquare = column[selectedColumn][selectedRow]
-
-        if selectedSquare == patterns[currentPattern][selectedColumn][selectedRow]:
-                pass
+        if column == patterns[currentPattern]:
+            if rotationTracker == []:
+                print('Completed pattern')
+                time.sleep(1)
+                print('Moving to next pattern...')
+                if currentPattern >= len(patterns)-1:
+                    currentPattern = 0
+                else:
+                    currentPattern += 1
+                
+                generateScannerPos()
+                currentPos = 0
 
         else:
-                if selectedSquare == 0:
-                        column[selectedColumn][selectedRow] = 1
+            selectedRow = scannerMatrix[currentPos][1]
+            selectedColumn = scannerMatrix[currentPos][0]
+            selectedSquare = column[selectedColumn][selectedRow]
 
-                elif selectedSquare == 1:
-                        column[selectedColumn][selectedRow] = 0
+            if selectedSquare == patterns[currentPattern][selectedColumn][selectedRow]:
+                    pass
 
-       
-        displayImages()
-
-        pygame.display.update()
-        currentPos += 1
-
-        if column == patterns[currentPattern]:
-            print('Completed pattern')
-            time.sleep(0.3)
-            print('Moving to next pattern...')
-            if currentPattern >= len(patterns)-1:
-                currentPattern = 0
             else:
-                currentPattern += 1
-                
-            generateScannerPos()
-            currentPos = 0
+                    if selectedSquare == 0:
+                            rotationTracker.append([selectedColumn, selectedRow, 0, 0])
+                            column[selectedColumn][selectedRow] = 1
+
+                    elif selectedSquare == 1:
+                            rotationTracker.append([selectedColumn, selectedRow, 1, 0])
+                            column[selectedColumn][selectedRow] = 0
+
+            currentPos += 1
+
+        displayImages()
+        rotateTiles(rotationTracker)
+        pygame.display.update()
+            
+
+        
 
         clock.tick(fps)
 

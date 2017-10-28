@@ -19,9 +19,9 @@ Display = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Squares')
 clock = pygame.time.Clock()
 
-square = pygame.image.load('square.jpg')
+square = pygame.image.load('resources/square.jpg')
 square = pygame.transform.scale(square, (tileSize, tileSize))
-square90 = pygame.image.load('square90.jpg')
+square90 = pygame.image.load('resources/square90.jpg')
 square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
 
