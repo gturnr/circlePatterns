@@ -7,14 +7,16 @@ pygame.init()
 menuBool = False
 
 #number of columns and rows on the plane - must be Int (Can be diff6erent!)
-columns = 20
-rows = 20
+columns = 40
+rows = 40
 
 #x,y of each tile. If increasing tileSize, considerdecreasing the rows and columns variables above...
-tileSize = 50
+tileSize = 25
 
 #Zoom sf - used when rotating images (between 1.0-1.9)
 zoom = 1.0
+
+rotationAngle = 15
 
 #Enter the desired fps of the display - note the higher the fps the faster each pattern will be completed
 #This is the desired FPS, if the value is too high, the program will only run at the fastest it can
@@ -26,12 +28,13 @@ fps = 0
 pattern1 = [[1,0],[0,1]]
 pattern2 = [[0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]]
 pattern3 = [[1,1],[0,0]]
-pattern4 = [[0,1,0],[0,0]]
+pattern4 = [[1, 1, 1, 0, 0, 0], [1, 1, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 1], [0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1]]
 pattern5 = [[1,0,1,0,1],[1,0,1,0,1]]
 pattern6 = [[1,1,0,0],[0,0,1,1]]
 pattern7 = [[1,0,0,0,1],[1,1,1,1,1,0],[0,1,0,1]]
 
-patterns = [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]
+#patterns = [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]
+patterns = [pattern4]
 
 #Output the generated patterns if True
 outputPatterns = False
@@ -73,10 +76,12 @@ square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
 
 squareL = pygame.image.load('resources/squareB.jpg')
-squareL = pygame.transform.scale(square, (int(tileSize*zoom), int(tileSize*zoom)))
+squareL = pygame.transform.scale(square, (int(tileSize*zoom), int(tileSize*zoom))).convert_alpha()
 square90L = pygame.image.load('resources/square90B.jpg')
-square90L = pygame.transform.scale(square90, (int(tileSize*zoom), int(tileSize*zoom)))
+square90L = pygame.transform.scale(square90, (int(tileSize*zoom), int(tileSize*zoom))).convert_alpha()
 rotationsLarge = [squareL, square90L]
+
+#create rotations of images
 
 '''
 The below algorithm converts any inputted patern into a list compatible with the output plane size
@@ -183,6 +188,8 @@ def displayImages():
             for imageindex, image in enumerate(row):
                     Display.blit(rotations[image], (rowindex*tileSize, imageindex*tileSize))
 
+displayImages()
+
 gameExit = False
 currentPos = 0
 currentPattern = 0
@@ -191,10 +198,49 @@ rotationTracker = []
 
 def rotateTiles(tiles):
     global column
+    def reformat():
+        for tile in tiles:
+            Display.blit(rotations[column[tile[0]][tile[1]]], (tile[0]*tileSize, tile[1]*tileSize))
+            try:
+                Display.blit(rotations[column[tile[0]-1][tile[1]-1]], ((tile[0]-1)*tileSize, (tile[1]-1)*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]][tile[1]-1]], ((tile[0])*tileSize, (tile[1]-1)*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]][tile[1]+1]], ((tile[0])*tileSize, (tile[1]+1)*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]-1][tile[1]]], ((tile[0]-1)*tileSize, (tile[1])*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]+1][tile[1]]], ((tile[0]+1)*tileSize, (tile[1])*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]-1][tile[1]+1]], ((tile[0]-1)*tileSize, (tile[1]+1)*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]][tile[1]+1]], ((tile[0])*tileSize, (tile[1]+1)*tileSize))
+            except:
+                pass
+            try:
+                Display.blit(rotations[column[tile[0]+1][tile[1]+1]], ((tile[0]+1)*tileSize, (tile[1]+1)*tileSize))
+            except:
+                pass
+
+    reformat()
+
     for index, tile in enumerate(tiles):
         degrees = tile[3]
+
         if degrees < 90:
-            img = rotationsLarge[tile[2]].convert_alpha()
+            img = rotationsLarge[tile[2]]
 
             x = tile[0]*tileSize + (tileSize)/2
             y = tile[1]*tileSize + (tileSize)/2
@@ -203,10 +249,14 @@ def rotateTiles(tiles):
 
             rect = imgRotated.get_rect()
 
-            tile[3] += 5
+            tile[3] += rotationAngle
             Display.blit(imgRotated, (x - rect.center[0], y - rect.center[1]))
 
         else:
+            if tile[2] == 1:
+                Display.blit(rotations[0], (tile[0]*tileSize, tile[1]*tileSize))
+            elif tile[2] == 0:
+                Display.blit(rotations[1], (tile[0]*tileSize, tile[1]*tileSize))
             tiles.pop(index)
 
 
@@ -247,8 +297,8 @@ while not gameExit:
 
             currentPos += 1
 
-        displayImages()
         rotateTiles(rotationTracker)
         pygame.display.update()
         clock.tick(fps)
+
 pygame.quit()

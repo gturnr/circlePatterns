@@ -3,8 +3,8 @@ pygame.init()
 
 #CHANGE THESE VALUES
 #number of columns and rows on the plane - must be Int (Can be different!)
-columns = 10
-rows = 10
+columns = 6
+rows = 6
 
 #x,y of each tile. If increasing tileSize, considerdecreasing the rows and columns variables above...
 tileSize = 100

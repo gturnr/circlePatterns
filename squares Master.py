@@ -7,8 +7,8 @@ pygame.init()
 menuBool = False
 
 #number of columns and rows on the plane - must be Int (Can be diff6erent!)
-columns = 20
-rows = 20
+columns = 10
+rows = 10
 
 #x,y of each tile. If increasing tileSize, considerdecreasing the rows and columns variables above...
 tileSize = 50
@@ -63,9 +63,9 @@ pygame.display.set_caption('Squares')
 clock = pygame.time.Clock()
 
 #load images and apply the correct transformations (scaling)
-square = pygame.image.load('resources/square.jpg')
+square = pygame.image.load('resources/squareB.jpg')
 square = pygame.transform.scale(square, (tileSize, tileSize))
-square90 = pygame.image.load('resources/square90.jpg')
+square90 = pygame.image.load('resources/square90B.jpg')
 square90 = pygame.transform.scale(square90, (tileSize, tileSize))
 rotations = [square, square90]
 
